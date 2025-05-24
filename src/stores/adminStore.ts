@@ -7,6 +7,7 @@ interface AdminState {
   user: AdminUser;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  setUser: (user: AdminUser) => void;
 }
 
 export const useAdminStore = create<AdminState>((set) => ({
@@ -14,6 +15,8 @@ export const useAdminStore = create<AdminState>((set) => ({
     username: '',
     isLoggedIn: false,
   },
+  
+  setUser: (user) => set({ user }),
   
   login: async (email, password) => {
     try {

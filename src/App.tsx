@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { supabase } from './lib/supabase';
+import { useAdminStore } from './stores/adminStore';
 
 // Components
 import Header from './components/layout/Header';
@@ -22,6 +25,30 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 
 function App() {
+  const setUser = useAdminStore((state) => state.setUser);
+
+  useEffect(() => {
+    // Check initial auth state
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser({ username: session.user.email || '', isLoggedIn: true });
+      }
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser({ username: session.user.email || '', isLoggedIn: true });
+      } else {
+        setUser({ username: '', isLoggedIn: false });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [setUser]);
+
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
@@ -47,6 +74,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <Toaster position="top-right" />
       </div>
     </Router>
   );
