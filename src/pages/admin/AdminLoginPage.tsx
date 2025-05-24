@@ -66,7 +66,7 @@ const AdminLoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500"
-                  placeholder="admin@example.com"
+                  placeholder="admin@tuttomoda.com"
                 />
               </div>
             </div>
@@ -106,7 +106,7 @@ const AdminLoginPage: React.FC = () => {
           
           <div className="text-center text-sm text-gray-600">
             <p>Para propósitos de demostración, usa:</p>
-            <p className="font-medium">Email: admin@example.com | Contraseña: admin123456</p>
+            <p className="font-medium">Email: admin@tuttomoda.com | Contraseña: tuttomoda2025</p>
           </div>
         </form>
       </div>
