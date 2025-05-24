@@ -38,7 +38,7 @@ export const useAdminStore = create<AdminState>((set) => ({
       return false;
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
+      toast.error('Error al iniciar sesión. Por favor, inténtalo de nuevo por favor.');
       return false;
     }
   },
