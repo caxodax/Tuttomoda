@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 
 interface AdminState {
   user: AdminUser;
-  login: (username: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
@@ -17,20 +17,25 @@ export const useAdminStore = create<AdminState>((set) => ({
   
   login: async (email, password) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase().trim(),
         password,
       });
       
       if (error) {
-        toast.error(error.message);
+        toast.error('Credenciales inválidas. Por favor, inténtalo de nuevo.');
         return false;
       }
       
-      set({ user: { username: email, isLoggedIn: true } });
-      return true;
+      if (data?.user) {
+        set({ user: { username: data.user.email || '', isLoggedIn: true } });
+        return true;
+      }
+      
+      return false;
     } catch (error) {
       console.error('Login error:', error);
+      toast.error('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
       return false;
     }
   },
@@ -47,6 +52,7 @@ export const useAdminStore = create<AdminState>((set) => ({
       set({ user: { username: '', isLoggedIn: false } });
     } catch (error) {
       console.error('Logout error:', error);
+      toast.error('Error al cerrar sesión');
     }
   },
 }));
