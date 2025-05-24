@@ -18,14 +18,14 @@ const AdminLoginPage: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const success = await login(email, password);
+      const success = await login(email.toLowerCase(), password);
       
       if (success) {
         navigate('/admin');
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
+      setError('Error al iniciar sesión. Por favor, verifica tus credenciales e inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -106,7 +106,7 @@ const AdminLoginPage: React.FC = () => {
           
           <div className="text-center text-sm text-gray-600">
             <p>Para propósitos de demostración, usa:</p>
-            <p className="font-medium">Email: admin@tuttomoda.com | Contraseña: admin123</p>
+            <p className="font-medium">Email: admin@example.com | Contraseña: admin123456</p>
           </div>
         </form>
       </div>
