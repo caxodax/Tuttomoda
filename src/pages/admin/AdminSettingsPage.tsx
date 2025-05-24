@@ -1,28 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/admin/Sidebar';
-import { siteConfig } from '../../data/siteConfig';
+import ImageUpload from '../../components/admin/ImageUpload';
+import { supabase } from '../../lib/supabase';
+import toast from 'react-hot-toast';
 
 const AdminSettingsPage: React.FC = () => {
   const [settings, setSettings] = useState({
-    storeName: siteConfig.storeName,
-    phone: siteConfig.phone,
-    whatsapp: siteConfig.whatsapp,
-    email: siteConfig.email,
-    address: siteConfig.address,
-    instagram: siteConfig.socialMedia.instagram || '',
-    facebook: siteConfig.socialMedia.facebook || '',
-    twitter: siteConfig.socialMedia.twitter || '',
+    id: '',
+    storeName: '',
+    logo_url: '',
+    phone: '',
+    whatsapp: '',
+    email: '',
+    address: '',
+    instagram: '',
+    facebook: '',
+    twitter: '',
   });
+  
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+  
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('*')
+        .single();
+      
+      if (error) throw error;
+      
+      if (data) {
+        setSettings({
+          id: data.id,
+          storeName: data.store_name,
+          logo_url: data.logo_url || '',
+          phone: data.phone || '',
+          whatsapp: data.whatsapp || '',
+          email: data.email || '',
+          address: data.address || '',
+          instagram: data.instagram || '',
+          facebook: data.facebook || '',
+          twitter: data.twitter || '',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      toast.error('Error al cargar la configuración');
+    }
+  };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setSettings(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogoUpload = (url: string) => {
+    setSettings(prev => ({ ...prev, logo_url: url }));
+  };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, this would update the configuration in your database
-    alert('Configuración guardada exitosamente');
+    
+    try {
+      const { error } = await supabase
+        .from('site_settings')
+        .update({
+          store_name: settings.storeName,
+          logo_url: settings.logo_url,
+          phone: settings.phone,
+          whatsapp: settings.whatsapp,
+          email: settings.email,
+          address: settings.address,
+          instagram: settings.instagram,
+          facebook: settings.facebook,
+          twitter: settings.twitter,
+        })
+        .eq('id', settings.id);
+      
+      if (error) throw error;
+      
+      toast.success('Configuración guardada exitosamente');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      toast.error('Error al guardar la configuración');
+    }
   };
   
   return (
@@ -35,6 +98,14 @@ const AdminSettingsPage: React.FC = () => {
           
           <div className="bg-white rounded-lg shadow-sm p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Logo de la Tienda</h2>
+                <ImageUpload
+                  onUpload={handleLogoUpload}
+                  currentImage={settings.logo_url}
+                />
+              </div>
+              
               <div>
                 <h2 className="text-xl font-semibold mb-4">Información de la Tienda</h2>
                 

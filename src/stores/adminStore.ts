@@ -1,29 +1,52 @@
 import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
 import { AdminUser } from '../types';
+import toast from 'react-hot-toast';
 
 interface AdminState {
   user: AdminUser;
-  login: (username: string, password: string) => boolean;
-  logout: () => void;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
 }
 
-// Note: In a real application, authentication would be handled securely with a backend
 export const useAdminStore = create<AdminState>((set) => ({
   user: {
     username: '',
     isLoggedIn: false,
   },
   
-  login: (username, password) => {
-    // Mock authentication - in a real app, this would validate against a secure backend
-    if (username === 'admin' && password === 'admin123') {
-      set({ user: { username, isLoggedIn: true } });
+  login: async (email, password) => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      
+      set({ user: { username: email, isLoggedIn: true } });
       return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    return false;
   },
   
-  logout: () => {
-    set({ user: { username: '', isLoggedIn: false } });
-  }
+  logout: async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      
+      set({ user: { username: '', isLoggedIn: false } });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  },
 }));
