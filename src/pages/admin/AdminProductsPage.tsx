@@ -205,14 +205,14 @@ const AdminProductsPage: React.FC = () => {
       
       <div className="flex-1 overflow-auto">
         <div className="p-8">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center mb-6">
             <h1 className="text-2xl font-bold">Gestión de Productos</h1>
             <button 
               onClick={() => {
                 resetForm();
                 setShowModal(true);
               }}
-              className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md flex items-center"
+              className="ml-4 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md flex items-center"
             >
               <Plus className="h-5 w-5 mr-2" />
               Nuevo Producto
@@ -330,7 +330,7 @@ const AdminProductsPage: React.FC = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full p-6">
             <h2 className="text-xl font-bold mb-4">
               {isEditing ? 'Editar Producto' : 'Nuevo Producto'}
