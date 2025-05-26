@@ -1,9 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../products/ProductCard';
-import { featuredProducts } from '../../data/mockData';
+import { useProducts } from '../../hooks/useSupabase';
+import { Loader2 } from 'lucide-react';
 
 const FeaturedProducts: React.FC = () => {
+  const { products, loading } = useProducts();
+  const featuredProducts = products.filter(product => product.is_featured);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-16">
+        <Loader2 className="h-8 w-8 animate-spin text-pink-600" />
+      </div>
+    );
+  }
+
+  if (featuredProducts.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">

@@ -1,14 +1,25 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import ProductGrid from '../components/products/ProductGrid';
-import { products, categories } from '../data/mockData';
+import { useProducts, useCategories } from '../hooks/useSupabase';
+import { Loader2 } from 'lucide-react';
 
 const CategoryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { products, loading: productsLoading } = useProducts();
+  const { categories, loading: categoriesLoading } = useCategories();
   
   const category = categories.find(cat => cat.id === id);
-  const categoryProducts = products.filter(product => product.categoryId === id);
+  const categoryProducts = products.filter(product => product.category_id === id);
   
+  if (productsLoading || categoriesLoading) {
+    return (
+      <div className="container mx-auto px-4 py-16 mt-16 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-pink-600" />
+      </div>
+    );
+  }
+
   if (!category) {
     return (
       <div className="container mx-auto px-4 py-16 mt-16 text-center">

@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
-import { siteConfig } from '../../data/siteConfig';
+import { useSiteSettings } from '../../hooks/useSupabase';
 
 const Footer: React.FC = () => {
+  const { settings } = useSiteSettings();
+
+  if (!settings) {
+    return null;
+  }
+
   return (
     <footer className="bg-gray-900 text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
@@ -17,20 +23,20 @@ const Footer: React.FC = () => {
               Tu destino para encontrar las últimas tendencias de moda con estilo y calidad.
             </p>
             <div className="flex space-x-4">
-              {siteConfig.socialMedia.instagram && (
-                <a href={siteConfig.socialMedia.instagram} target="_blank" rel="noopener noreferrer" 
+              {settings.socialMedia.instagram && (
+                <a href={settings.socialMedia.instagram} target="_blank" rel="noopener noreferrer" 
                    className="text-gray-400 hover:text-pink-500 transition-colors">
                   <Instagram size={20} />
                 </a>
               )}
-              {siteConfig.socialMedia.facebook && (
-                <a href={siteConfig.socialMedia.facebook} target="_blank" rel="noopener noreferrer"
+              {settings.socialMedia.facebook && (
+                <a href={settings.socialMedia.facebook} target="_blank" rel="noopener noreferrer"
                    className="text-gray-400 hover:text-pink-500 transition-colors">
                   <Facebook size={20} />
                 </a>
               )}
-              {siteConfig.socialMedia.twitter && (
-                <a href={siteConfig.socialMedia.twitter} target="_blank" rel="noopener noreferrer"
+              {settings.socialMedia.twitter && (
+                <a href={settings.socialMedia.twitter} target="_blank" rel="noopener noreferrer"
                    className="text-gray-400 hover:text-pink-500 transition-colors">
                   <Twitter size={20} />
                 </a>
@@ -74,20 +80,26 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-pink-500">Contacto</h3>
             <div className="space-y-3">
-              <div className="flex items-start">
-                <MapPin className="w-5 h-5 text-pink-500 mr-2 mt-0.5" />
-                <span className="text-gray-400">{siteConfig.address}</span>
-              </div>
-              <div className="flex items-center">
-                <Phone className="w-5 h-5 text-pink-500 mr-2" />
-                <span className="text-gray-400">{siteConfig.phone}</span>
-              </div>
-              <div className="flex items-center">
-                <Mail className="w-5 h-5 text-pink-500 mr-2" />
-                <a href={`mailto:${siteConfig.email}`} className="text-gray-400 hover:text-white transition-colors">
-                  {siteConfig.email}
-                </a>
-              </div>
+              {settings.address && (
+                <div className="flex items-start">
+                  <MapPin className="w-5 h-5 text-pink-500 mr-2 mt-0.5" />
+                  <span className="text-gray-400">{settings.address}</span>
+                </div>
+              )}
+              {settings.phone && (
+                <div className="flex items-center">
+                  <Phone className="w-5 h-5 text-pink-500 mr-2" />
+                  <span className="text-gray-400">{settings.phone}</span>
+                </div>
+              )}
+              {settings.email && (
+                <div className="flex items-center">
+                  <Mail className="w-5 h-5 text-pink-500 mr-2" />
+                  <a href={`mailto:${settings.email}`} className="text-gray-400 hover:text-white transition-colors">
+                    {settings.email}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

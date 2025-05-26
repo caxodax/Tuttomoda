@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import { ShoppingBag } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { products } from '../data/mockData';
+import { useProducts } from '../hooks/useSupabase';
 import { useCartStore } from '../stores/cartStore';
 import ProductCard from '../components/products/ProductCard';
 
@@ -16,6 +16,7 @@ import 'swiper/css/pagination';
 const ProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { products, loading } = useProducts();
   const addToCart = useCartStore((state) => state.addToCart);
   
   const product = products.find(p => p.id === id);
@@ -30,9 +31,17 @@ const ProductPage: React.FC = () => {
   
   // Get related products (same category, excluding current product)
   const relatedProducts = product 
-    ? products.filter(p => p.categoryId === product.categoryId && p.id !== product.id).slice(0, 4)
+    ? products.filter(p => p.category_id === product.category_id && p.id !== product.id).slice(0, 4)
     : [];
   
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16 mt-16 flex justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-pink-600"></div>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-16 mt-16 text-center">

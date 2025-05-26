@@ -1,8 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { categories } from '../../data/mockData';
+import { useCategories } from '../../hooks/useSupabase';
+import { Loader2 } from 'lucide-react';
 
 const CategoriesShowcase: React.FC = () => {
+  const { categories, loading } = useCategories();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-16">
+        <Loader2 className="h-8 w-8 animate-spin text-pink-600" />
+      </div>
+    );
+  }
+
+  if (categories.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -19,7 +34,7 @@ const CategoriesShowcase: React.FC = () => {
               className="group relative h-80 overflow-hidden rounded-lg"
             >
               <img 
-                src={category.image} 
+                src={category.image_url || 'https://via.placeholder.com/400x300'} 
                 alt={category.name}
                 className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
               />

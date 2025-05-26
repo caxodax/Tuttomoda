@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import { ChevronRight } from 'lucide-react';
-import { newProducts } from '../../data/mockData';
+import { useProducts } from '../../hooks/useSupabase';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -11,7 +11,12 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 const HeroSlider: React.FC = () => {
-  const featuredItems = newProducts.slice(0, 5);
+  const { products, loading } = useProducts();
+  const latestProducts = products.slice(0, 5);
+  
+  if (loading || latestProducts.length === 0) {
+    return null;
+  }
   
   return (
     <section className="relative h-[600px] mt-16">
@@ -23,7 +28,7 @@ const HeroSlider: React.FC = () => {
         loop={true}
         className="h-full"
       >
-        {featuredItems.map((product) => (
+        {latestProducts.map((product) => (
           <SwiperSlide key={product.id}>
             <div 
               className="h-full w-full bg-cover bg-center flex items-center"
