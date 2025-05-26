@@ -66,30 +66,62 @@ export const useSiteSettings = () => {
 
   const fetchSettings = async () => {
     try {
+      // First try to get existing settings
       const { data, error } = await supabase
         .from('site_settings')
         .select('*')
-        .single();
+        .limit(1);
 
       if (error) throw error;
       
-      if (data) {
+      if (data && data.length > 0) {
+        // Use the first row if settings exist
+        const siteData = data[0];
         setSettings({
-          storeName: data.store_name,
-          logo: data.logo_url || '',
-          phone: data.phone || '',
-          whatsapp: data.whatsapp || '',
-          email: data.email || '',
-          address: data.address || '',
+          storeName: siteData.store_name,
+          logo: siteData.logo_url || '',
+          phone: siteData.phone || '',
+          whatsapp: siteData.whatsapp || '',
+          email: siteData.email || '',
+          address: siteData.address || '',
           socialMedia: {
-            instagram: data.instagram || '',
-            facebook: data.facebook || '',
-            twitter: data.twitter || ''
+            instagram: siteData.instagram || '',
+            facebook: siteData.facebook || '',
+            twitter: siteData.twitter || ''
+          }
+        });
+      } else {
+        // Set default values if no settings exist
+        setSettings({
+          storeName: 'Store Name',
+          logo: '/logo.png',
+          phone: '',
+          whatsapp: '',
+          email: '',
+          address: '',
+          socialMedia: {
+            instagram: '',
+            facebook: '',
+            twitter: ''
           }
         });
       }
     } catch (error) {
       console.error('Error fetching settings:', error);
+      // Set default values on error
+      setSettings({
+        storeName: 'Store Name',
+        logo: '/logo.png',
+        phone: '',
+        whatsapp: '',
+        email: '',
+        address: '',
+        socialMedia: {
+          instagram: '',
+          facebook: '',
+          twitter: ''
+        }
+      });
     } finally {
       setLoading(false);
     }
