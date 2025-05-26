@@ -21,6 +21,7 @@ interface Product {
   colors: string[];
   is_featured: boolean;
   is_new: boolean;
+  is_slider: boolean;
   stock: number;
 }
 
@@ -42,6 +43,7 @@ const AdminProductsPage: React.FC = () => {
     images: [] as string[],
     is_featured: false,
     is_new: false,
+    is_slider: false,
     stock: '0'
   });
 
@@ -98,6 +100,7 @@ const AdminProductsPage: React.FC = () => {
         images: formData.images,
         is_featured: formData.is_featured,
         is_new: formData.is_new,
+        is_slider: formData.is_slider,
         stock: parseInt(formData.stock)
       };
 
@@ -139,6 +142,7 @@ const AdminProductsPage: React.FC = () => {
       images: product.images,
       is_featured: product.is_featured,
       is_new: product.is_new,
+      is_slider: product.is_slider,
       stock: product.stock.toString()
     });
     setIsEditing(true);
@@ -189,6 +193,7 @@ const AdminProductsPage: React.FC = () => {
       images: [],
       is_featured: false,
       is_new: false,
+      is_slider: false,
       stock: '0'
     });
     setCurrentProduct(null);
@@ -485,6 +490,16 @@ const AdminProductsPage: React.FC = () => {
                       className="rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                     />
                     <span className="ml-2 text-sm text-gray-700">Nuevo</span>
+                  </label>
+
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_slider}
+                      onChange={(e) => setFormData(prev => ({ ...prev, is_slider: e.target.checked }))}
+                      className="rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">Mostrar en Slider</span>
                   </label>
                 </div>
               </div>

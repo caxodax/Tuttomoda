@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X, User } from 'lucide-react';
 import { useCartStore } from '../../stores/cartStore';
-import { siteConfig } from '../../data/siteConfig';
+import { useCategories, useSiteSettings } from '../../hooks/useSupabase';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const cartItemsCount = useCartStore((state) => state.getTotalItems());
+  const { categories } = useCategories();
+  const { settings } = useSiteSettings();
   
   // Close mobile menu when changing routes
   useEffect(() => {
@@ -33,6 +35,13 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
+            {settings?.logo && (
+              <img 
+                src={settings.logo} 
+                alt={settings?.storeName || 'Logo'} 
+                className="h-8 w-auto mr-2"
+              />
+            )}
             <span className="text-2xl font-bold text-pink-600">
               tutto<span className="text-black">moda</span>
             </span>
@@ -43,18 +52,15 @@ const Header: React.FC = () => {
             <Link to="/" className="text-gray-800 hover:text-pink-600 transition-colors">
               Inicio
             </Link>
-            <Link to="/category/1" className="text-gray-800 hover:text-pink-600 transition-colors">
-              Vestidos
-            </Link>
-            <Link to="/category/2" className="text-gray-800 hover:text-pink-600 transition-colors">
-              Pantalones
-            </Link>
-            <Link to="/category/3" className="text-gray-800 hover:text-pink-600 transition-colors">
-              Blusas
-            </Link>
-            <Link to="/category/4" className="text-gray-800 hover:text-pink-600 transition-colors">
-              Accesorios
-            </Link>
+            {categories.map((category) => (
+              <Link 
+                key={category.id}
+                to={`/category/${category.id}`} 
+                className="text-gray-800 hover:text-pink-600 transition-colors"
+              >
+                {category.name}
+              </Link>
+            ))}
           </nav>
           
           {/* Cart & Admin Links */}
@@ -92,18 +98,15 @@ const Header: React.FC = () => {
               <Link to="/" className="text-gray-800 hover:text-pink-600 transition-colors">
                 Inicio
               </Link>
-              <Link to="/category/1" className="text-gray-800 hover:text-pink-600 transition-colors">
-                Vestidos
-              </Link>
-              <Link to="/category/2" className="text-gray-800 hover:text-pink-600 transition-colors">
-                Pantalones
-              </Link>
-              <Link to="/category/3" className="text-gray-800 hover:text-pink-600 transition-colors">
-                Blusas
-              </Link>
-              <Link to="/category/4" className="text-gray-800 hover:text-pink-600 transition-colors">
-                Accesorios
-              </Link>
+              {categories.map((category) => (
+                <Link 
+                  key={category.id}
+                  to={`/category/${category.id}`} 
+                  className="text-gray-800 hover:text-pink-600 transition-colors"
+                >
+                  {category.name}
+                </Link>
+              ))}
             </div>
           </nav>
         )}

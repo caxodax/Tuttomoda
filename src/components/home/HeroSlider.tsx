@@ -12,9 +12,11 @@ import 'swiper/css/navigation';
 
 const HeroSlider: React.FC = () => {
   const { products, loading } = useProducts();
-  const latestProducts = products.slice(0, 5);
+  const sliderProducts = products
+    .filter(product => product.is_slider)
+    .slice(0, 5);
   
-  if (loading || latestProducts.length === 0) {
+  if (loading || sliderProducts.length === 0) {
     return null;
   }
   
@@ -28,7 +30,7 @@ const HeroSlider: React.FC = () => {
         loop={true}
         className="h-full"
       >
-        {latestProducts.map((product) => (
+        {sliderProducts.map((product) => (
           <SwiperSlide key={product.id}>
             <div 
               className="h-full w-full bg-cover bg-center flex items-center"

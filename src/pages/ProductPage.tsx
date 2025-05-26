@@ -7,6 +7,7 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useProducts } from '../hooks/useSupabase';
 import { useCartStore } from '../stores/cartStore';
 import ProductCard from '../components/products/ProductCard';
+import toast from 'react-hot-toast';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -16,7 +17,7 @@ import 'swiper/css/pagination';
 const ProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { products, loading } = useProducts();
+  const { products, loading, refetch } = useProducts();
   const addToCart = useCartStore((state) => state.addToCart);
   
   const product = products.find(p => p.id === id);
@@ -56,9 +57,32 @@ const ProductPage: React.FC = () => {
     );
   }
   
-  const handleAddToCart = () => {
-    addToCart(product, quantity, selectedSize, selectedColor);
-    navigate('/cart');
+  const handleAddToCart = async () => {
+    if (!product || product.stock <= 0) {
+      toast.error('Producto agotado');
+      return;
+    }
+
+    try {
+      // Update stock in database
+      const { error } = await supabase
+        .from('products')
+        .update({ stock: product.stock - quantity })
+        .eq('id', product.id);
+
+      if (error) throw error;
+
+      // Add to cart
+      addToCart(product, quantity, selectedSize, selectedColor);
+      
+      // Refresh products to get updated stock
+      await refetch();
+      
+      navigate('/cart');
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      toast.error('Error al procesar la compra');
+    }
   };
   
   return (
@@ -162,10 +186,15 @@ const ProductPage: React.FC = () => {
             
             <button
               onClick={handleAddToCart}
-              className="flex items-center bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-md transition-colors"
+              disabled={!product || product.stock <= 0}
+              className={`flex items-center px-8 py-3 rounded-md transition-colors ${
+                product && product.stock > 0
+                  ? 'bg-pink-600 hover:bg-pink-700 text-white'
+                  : 'bg-gray-300 cursor-not-allowed text-gray-500'
+              }`}
             >
               <ShoppingBag className="h-5 w-5 mr-2" />
-              Añadir al carrito
+              {product && product.stock > 0 ? 'Añadir al carrito' : 'Agotado'}
             </button>
           </div>
           
