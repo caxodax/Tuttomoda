@@ -69,11 +69,10 @@ export const useSiteSettings = () => {
       const { data, error } = await supabase
         .from('site_settings')
         .select('*')
-        .limit(1)
         .maybeSingle();
 
       if (error) throw error;
-      
+
       if (data) {
         setSettings({
           storeName: data.store_name,
@@ -89,7 +88,6 @@ export const useSiteSettings = () => {
           }
         });
       } else {
-        // Set default values if no settings exist
         setSettings({
           storeName: 'tuttomoda',
           logo: '',
@@ -106,7 +104,6 @@ export const useSiteSettings = () => {
       }
     } catch (error) {
       console.error('Error fetching settings:', error);
-      // Set default values on error
       setSettings({
         storeName: 'tuttomoda',
         logo: '',
