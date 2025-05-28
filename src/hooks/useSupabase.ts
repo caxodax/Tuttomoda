@@ -56,9 +56,24 @@ export const useCategories = () => {
   return { categories, loading, refetch: fetchCategories };
 };
 
+const defaultSettings: SiteConfig = {
+  storeName: 'tuttomoda',
+  logo: '/logo.png',
+  phone: '+1234567890',
+  whatsapp: '+1234567890',
+  email: 'info@tuttomoda.com',
+  address: 'Calle Principal #123, Ciudad',
+  socialMedia: {
+    instagram: 'https://instagram.com/tuttomoda',
+    facebook: 'https://facebook.com/tuttomoda',
+    twitter: 'https://twitter.com/tuttomoda'
+  }
+};
+
 export const useSiteSettings = () => {
   const [settings, setSettings] = useState<SiteConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -71,56 +86,35 @@ export const useSiteSettings = () => {
         .select('*')
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       if (data) {
         setSettings({
-          storeName: data.store_name,
-          logo: data.logo_url || '',
-          phone: data.phone || '',
-          whatsapp: data.whatsapp || '',
-          email: data.email || '',
-          address: data.address || '',
+          storeName: data.store_name || defaultSettings.storeName,
+          logo: data.logo_url || defaultSettings.logo,
+          phone: data.phone || defaultSettings.phone,
+          whatsapp: data.whatsapp || defaultSettings.whatsapp,
+          email: data.email || defaultSettings.email,
+          address: data.address || defaultSettings.address,
           socialMedia: {
-            instagram: data.instagram || '',
-            facebook: data.facebook || '',
-            twitter: data.twitter || ''
+            instagram: data.instagram || defaultSettings.socialMedia.instagram,
+            facebook: data.facebook || defaultSettings.socialMedia.facebook,
+            twitter: data.twitter || defaultSettings.socialMedia.twitter
           }
         });
       } else {
-        setSettings({
-          storeName: 'tuttomoda',
-          logo: '',
-          phone: '',
-          whatsapp: '',
-          email: '',
-          address: '',
-          socialMedia: {
-            instagram: '',
-            facebook: '',
-            twitter: ''
-          }
-        });
+        setSettings(defaultSettings);
       }
     } catch (error) {
       console.error('Error fetching settings:', error);
-      setSettings({
-        storeName: 'tuttomoda',
-        logo: '',
-        phone: '',
-        whatsapp: '',
-        email: '',
-        address: '',
-        socialMedia: {
-          instagram: '',
-          facebook: '',
-          twitter: ''
-        }
-      });
+      setError('Error al cargar la configuración');
+      setSettings(defaultSettings);
     } finally {
       setLoading(false);
     }
   };
 
-  return { settings, loading, refetch: fetchSettings };
+  return { settings, loading, error, refetch: fetchSettings };
 };
