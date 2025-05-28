@@ -66,35 +66,33 @@ export const useSiteSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      // First try to get existing settings
       const { data, error } = await supabase
         .from('site_settings')
         .select('*')
-        .limit(1);
+        .limit(1)
+        .maybeSingle();
 
       if (error) throw error;
       
-      if (data && data.length > 0) {
-        // Use the first row if settings exist
-        const siteData = data[0];
+      if (data) {
         setSettings({
-          storeName: siteData.store_name,
-          logo: siteData.logo_url || '',
-          phone: siteData.phone || '',
-          whatsapp: siteData.whatsapp || '',
-          email: siteData.email || '',
-          address: siteData.address || '',
+          storeName: data.store_name,
+          logo: data.logo_url || '',
+          phone: data.phone || '',
+          whatsapp: data.whatsapp || '',
+          email: data.email || '',
+          address: data.address || '',
           socialMedia: {
-            instagram: siteData.instagram || '',
-            facebook: siteData.facebook || '',
-            twitter: siteData.twitter || ''
+            instagram: data.instagram || '',
+            facebook: data.facebook || '',
+            twitter: data.twitter || ''
           }
         });
       } else {
         // Set default values if no settings exist
         setSettings({
-          storeName: 'Store Name',
-          logo: '/logo.png',
+          storeName: 'tuttomoda',
+          logo: '',
           phone: '',
           whatsapp: '',
           email: '',
@@ -110,8 +108,8 @@ export const useSiteSettings = () => {
       console.error('Error fetching settings:', error);
       // Set default values on error
       setSettings({
-        storeName: 'Store Name',
-        logo: '/logo.png',
+        storeName: 'tuttomoda',
+        logo: '',
         phone: '',
         whatsapp: '',
         email: '',
