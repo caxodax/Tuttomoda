@@ -93,7 +93,7 @@ npm run dev
 
 ## 🔒 Autenticación
 
-El panel de administración utiliza autenticación de Supabase. Para acceder:
+El panel de administración utiliza autenticación de Supabase. Para acceder: 
 
 1. URL: `/admin/login`
 2. Credenciales por defecto:
