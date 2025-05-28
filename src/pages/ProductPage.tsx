@@ -8,6 +8,7 @@ import { useProducts } from '../hooks/useSupabase';
 import { useCartStore } from '../stores/cartStore';
 import ProductCard from '../components/products/ProductCard';
 import toast from 'react-hot-toast';
+import { supabase } from '../lib/supabase';
 
 // Import Swiper styles
 import 'swiper/css';
