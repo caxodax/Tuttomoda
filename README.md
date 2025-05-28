@@ -9,7 +9,7 @@ Una tienda en línea moderna y elegante construida con React y Supabase.
   - TypeScript
   - Tailwind CSS
   - Zustand (Estado global)
-  - React Router DOM
+  - React Router DOM 
   - Lucide React (Iconos)
   - React Hot Toast (Notificaciones)
   - Swiper (Carrusel)
