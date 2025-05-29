@@ -3,8 +3,8 @@ import { SiteConfig } from '../types';
 export const siteConfig: SiteConfig = {
   storeName: 'tuttomoda',
   logo: '/logo.png',
-  phone: '+123456789',
-  whatsapp: '+123456789',
+  phone: '+584128519872',
+  whatsapp: '+584128519872',
   email: 'info@tuttomoda.com',
   address: '123 Fashion Street, City, Country',
   socialMedia: {
