@@ -1,11 +1,19 @@
 import { CartItem, ShippingDetails } from '../types';
-import { siteConfig } from '../data/siteConfig';
+import { useSiteSettings } from '../hooks/useSupabase';
 
-export const sendOrderToWhatsApp = (items: CartItem[], shippingDetails: ShippingDetails, total: number) => {
-  const phone = siteConfig.whatsapp.replace(/[^0-9]/g, '');
+export const sendOrderToWhatsApp = async (items: CartItem[], shippingDetails: ShippingDetails, total: number) => {
+  // Get site settings to access WhatsApp number
+  const { settings } = useSiteSettings();
+  
+  if (!settings?.whatsapp) {
+    console.error('WhatsApp number not configured in admin settings');
+    return;
+  }
+
+  const phone = settings.whatsapp.replace(/[^0-9]/g, '');
   
   // Create order message
-  let message = `*Nuevo Pedido - tuttomoda*\n\n`;
+  let message = `*Nuevo Pedido - ${settings.storeName || 'tuttomoda'}*\n\n`;
   message += `*Datos del Cliente*\n`;
   message += `Nombre: ${shippingDetails.fullName}\n`;
   message += `Email: ${shippingDetails.email}\n`;
