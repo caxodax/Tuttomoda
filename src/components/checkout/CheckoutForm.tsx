@@ -3,13 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../stores/cartStore';
 import { ShippingDetails } from '../../types';
 import { sendOrderToWhatsApp } from '../../utils/whatsapp';
-import { useSiteSettings } from '../../hooks/useSupabase';
-import toast from 'react-hot-toast';
 
 const CheckoutForm: React.FC = () => {
   const navigate = useNavigate();
   const { items, getTotalPrice, clearCart } = useCartStore();
-  const { settings } = useSiteSettings();
   
   const [shippingDetails, setShippingDetails] = useState<ShippingDetails>({
     fullName: '',
@@ -29,11 +26,6 @@ const CheckoutForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!settings?.whatsapp) {
-      toast.error('No se ha configurado un número de WhatsApp para pedidos');
-      return;
-    }
-    
     // Send order to WhatsApp
     const total = getTotalPrice();
     sendOrderToWhatsApp(items, shippingDetails, total);
@@ -41,6 +33,8 @@ const CheckoutForm: React.FC = () => {
     // Clear cart and redirect
     clearCart();
     navigate('/');
+    
+    // In a real application, you would also save the order to your database
   };
   
   return (
