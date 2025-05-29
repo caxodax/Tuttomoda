@@ -103,11 +103,6 @@ const AdminLoginPage: React.FC = () => {
               {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </div>
-          
-          <div className="text-center text-sm text-gray-600">
-            <p>Para propósitos de demostración, usa:</p>
-            <p className="font-medium">Email: admin@tuttomoda.com | Contraseña: tuttomoda2025</p>
-          </div>
         </form>
       </div>
     </div>
