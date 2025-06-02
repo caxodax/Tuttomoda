@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ProductGrid from '../components/products/ProductGrid';
 import { useProducts } from '../hooks/useSupabase';
 import { Loader2 } from 'lucide-react';
 
 const AllProductsPage: React.FC = () => {
   const { products, loading } = useProducts();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (loading) {
     return (
