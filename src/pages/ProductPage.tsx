@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -30,6 +30,10 @@ const ProductPage: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     product?.colors ? product.colors[0] : undefined
   );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
   
   // Get related products (same category, excluding current product)
   const relatedProducts = product 
