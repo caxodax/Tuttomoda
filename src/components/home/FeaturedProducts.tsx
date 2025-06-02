@@ -36,7 +36,7 @@ const FeaturedProducts: React.FC = () => {
         
         <div className="text-center mt-10">
           <Link 
-            to="/category/1" 
+            to="/products" 
             className="inline-block border-2 border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white px-6 py-3 rounded-md transition-colors font-medium"
           >
             Ver más productos

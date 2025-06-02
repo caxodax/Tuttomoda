@@ -20,6 +20,7 @@ import AdminProductsPage from './pages/admin/AdminProductsPage';
 import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import AllProductsPage from './pages/AllProductsPage';
 
 // Routing
 import ProtectedRoute from './components/admin/ProtectedRoute';
@@ -37,6 +38,7 @@ const AppContent = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/products" element={<AllProductsPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
