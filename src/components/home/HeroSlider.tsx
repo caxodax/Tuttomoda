@@ -21,7 +21,7 @@ const HeroSlider: React.FC = () => {
   }
   
   return (
-    <section className="relative h-[600px] mt-16">
+    <section className="relative h-[400px] md:h-[500px] mt-16">
       <Swiper
         modules={[Pagination, Navigation, Autoplay]}
         pagination={{ clickable: true }}
