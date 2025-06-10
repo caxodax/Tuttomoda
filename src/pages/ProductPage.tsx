@@ -34,6 +34,13 @@ const ProductPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+
+  // Reset quantity when product changes or stock updates
+  useEffect(() => {
+    if (product && product.stock > 0) {
+      setQuantity(Math.min(1, product.stock));
+    }
+  }, [product?.stock]);
   
   // Get related products (same category, excluding current product)
   const relatedProducts = product 
@@ -61,10 +68,17 @@ const ProductPage: React.FC = () => {
       </div>
     );
   }
+
+  const maxQuantity = Math.min(product.stock, 10); // Limit to stock or 10, whichever is lower
   
   const handleAddToCart = async () => {
     if (!product || product.stock <= 0) {
       toast.error('Producto agotado');
+      return;
+    }
+
+    if (quantity > product.stock) {
+      toast.error(`Solo hay ${product.stock} unidades disponibles`);
       return;
     }
 
@@ -87,6 +101,17 @@ const ProductPage: React.FC = () => {
     } catch (error) {
       console.error('Error updating stock:', error);
       toast.error('Error al procesar la compra');
+    }
+  };
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity < 1) {
+      setQuantity(1);
+    } else if (newQuantity > product.stock) {
+      setQuantity(product.stock);
+      toast.error(`Solo hay ${product.stock} unidades disponibles`);
+    } else {
+      setQuantity(newQuantity);
     }
   };
   
@@ -175,15 +200,24 @@ const ProductPage: React.FC = () => {
           <div className="flex flex-wrap gap-4 items-center mb-8">
             <div className="flex items-center border border-gray-300 rounded-md">
               <button 
-                onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                className="px-4 py-2 text-gray-600 hover:text-gray-900"
+                onClick={() => handleQuantityChange(quantity - 1)}
+                disabled={quantity <= 1}
+                className="px-4 py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 -
               </button>
-              <span className="w-12 text-center">{quantity}</span>
+              <input
+                type="number"
+                min="1"
+                max={product.stock}
+                value={quantity}
+                onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                className="w-16 text-center py-2 border-0 focus:ring-0 focus:outline-none"
+              />
               <button 
-                onClick={() => setQuantity(prev => prev + 1)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-900"
+                onClick={() => handleQuantityChange(quantity + 1)}
+                disabled={quantity >= product.stock}
+                className="px-4 py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 +
               </button>
