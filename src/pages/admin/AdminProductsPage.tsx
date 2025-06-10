@@ -336,7 +336,7 @@ const AdminProductsPage: React.FC = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full p-6">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
             <h2 className="text-xl font-bold mb-4">
               {isEditing ? 'Editar Producto' : 'Nuevo Producto'}
             </h2>
@@ -447,31 +447,17 @@ const AdminProductsPage: React.FC = () => {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Imágenes
+                    Imágenes del Producto
                   </label>
-                  <ImageUpload onUpload={handleImageUpload} />
-                  
-                  <div className="mt-2 grid grid-cols-4 gap-2">
-                    {formData.images.map((url, index) => (
-                      <div key={index} className="relative">
-                        <img 
-                          src={url} 
-                          alt="" 
-                          className="h-20 w-20 object-cover rounded"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                        >
-                          <Trash className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                  <ImageUpload 
+                    onUpload={handleImageUpload} 
+                    currentImages={formData.images}
+                    onRemove={removeImage}
+                    multiple={true}
+                  />
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="md:col-span-2 flex items-center space-x-6">
                   <label className="flex items-center">
                     <input
                       type="checkbox"
