@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Loader2 } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useProducts } from '../hooks/useSupabase';
 import { useCartStore } from '../stores/cartStore';
 import ProductCard from '../components/products/ProductCard';
 import toast from 'react-hot-toast';
-import { supabase } from '../lib/supabase';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -50,7 +49,7 @@ const ProductPage: React.FC = () => {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-16 mt-16 flex justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-pink-600"></div>
+        <Loader2 className="h-8 w-8 animate-spin text-pink-600" />
       </div>
     );
   }
@@ -68,10 +67,8 @@ const ProductPage: React.FC = () => {
       </div>
     );
   }
-
-  const maxQuantity = Math.min(product.stock, 10); // Limit to stock or 10, whichever is lower
   
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     if (!product || product.stock <= 0) {
       toast.error('Producto agotado');
       return;
@@ -82,26 +79,10 @@ const ProductPage: React.FC = () => {
       return;
     }
 
-    try {
-      // Update stock in database
-      const { error } = await supabase
-        .from('products')
-        .update({ stock: product.stock - quantity })
-        .eq('id', product.id);
-
-      if (error) throw error;
-
-      // Add to cart
-      addToCart(product, quantity, selectedSize, selectedColor);
-      
-      // Refresh products to get updated stock
-      await refetch();
-      
-      navigate('/cart');
-    } catch (error) {
-      console.error('Error updating stock:', error);
-      toast.error('Error al procesar la compra');
-    }
+    // Add to cart without updating stock (stock will be updated on order confirmation)
+    addToCart(product, quantity, selectedSize, selectedColor);
+    toast.success('Producto añadido al carrito');
+    navigate('/cart');
   };
 
   const handleQuantityChange = (newQuantity: number) => {

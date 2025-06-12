@@ -1,11 +1,17 @@
 import { CartItem, ShippingDetails } from '../types';
-import { siteConfig } from '../data/siteConfig';
 
-export const sendOrderToWhatsApp = (items: CartItem[], shippingDetails: ShippingDetails, total: number) => {
-  const phone = siteConfig.whatsapp.replace(/[^0-9]/g, '');
+export const sendOrderToWhatsApp = (
+  orderCode: string,
+  items: CartItem[], 
+  shippingDetails: ShippingDetails, 
+  total: number,
+  whatsappNumber: string
+) => {
+  const phone = whatsappNumber.replace(/[^0-9]/g, '');
   
   // Create order message
   let message = `*Nuevo Pedido - tuttomoda*\n\n`;
+  message += `*Código de Pedido: ${orderCode}*\n\n`;
   message += `*Datos del Cliente*\n`;
   message += `Nombre: ${shippingDetails.fullName}\n`;
   message += `Email: ${shippingDetails.email}\n`;
@@ -39,6 +45,7 @@ export const sendOrderToWhatsApp = (items: CartItem[], shippingDetails: Shipping
   });
   
   message += `\n*Total del Pedido: $${total.toFixed(2)}*\n`;
+  message += `\nFecha: ${new Date().toLocaleString('es-ES')}`;
   
   // Encode the message for WhatsApp
   const encodedMessage = encodeURIComponent(message);
